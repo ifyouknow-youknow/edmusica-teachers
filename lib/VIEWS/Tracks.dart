@@ -25,6 +25,7 @@ class Tracks extends StatefulWidget {
 class _TracksState extends State<Tracks> {
   List<Map<String, dynamic>> _trackObjs = [];
   Sound _mediaPlayer = Sound();
+  bool _isPlaying = false;
 
   void _fetchTracks() async {
     setState(() {
@@ -75,95 +76,118 @@ class _TracksState extends State<Tracks> {
           ),
         ),
         // MAIN
-        if (_trackObjs.isNotEmpty)
-          ...removeDupes(_trackObjs.map((ting) => ting['category']).toList())
-              .map(
-            (categ) {
-              return BorderView(
-                bottom: true,
-                bottomColor: Colors.black26,
-                child: AccordionView(
-                  topWidget: PaddingView(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.video_library,
-                          size: 32,
-                          color: hexToColor("#3490F3"),
-                        ),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        TextView(
-                          text: categ,
-                          size: 22,
-                          weight: FontWeight.w600,
-                        )
-                      ],
-                    ),
-                  ),
-                  bottomWidget: SizedBox(
-                    width: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: sortArrayByProperty(
-                              _trackObjs
-                                  .where((ting) => ting['category'] == categ)
-                                  .toList(),
-                              'order')
-                          .map((track) {
-                        return PaddingView(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              TextView(
-                                text: track['title'],
-                                size: 18,
-                                wrap: true,
-                              ),
-                              Row(
-                                children: [
-                                  ButtonView(
-                                    child: Icon(
-                                      Icons.play_arrow_rounded,
-                                      size: 32,
-                                      color: hexToColor("#1985C6"),
-                                    ),
-                                    onPress: () async {
-                                      await _mediaPlayer.stopPlaying();
-                                      _mediaPlayer.audioPath = "";
-                                      _mediaPlayer.audioPath =
-                                          track['audioUrl'];
-                                      await _mediaPlayer.playRecording();
-                                    },
-                                  ),
-                                  SizedBox(
-                                    width: 15,
-                                  ),
-                                  ButtonView(
-                                    child: Icon(
-                                      Icons.stop_rounded,
-                                      size: 32,
-                                      color: hexToColor("#FF1F54"),
-                                    ),
-                                    onPress: () {
-                                      _mediaPlayer.audioPath = "";
-                                      _mediaPlayer.stopPlaying();
-                                    },
-                                  )
-                                ],
-                              )
-                            ],
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                if (_trackObjs.isNotEmpty)
+                  ...removeDupes(
+                          _trackObjs.map((ting) => ting['category']).toList())
+                      .map(
+                    (categ) {
+                      return BorderView(
+                        bottom: true,
+                        bottomColor: Colors.black26,
+                        child: AccordionView(
+                          topWidget: PaddingView(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.video_library,
+                                  size: 32,
+                                  color: hexToColor("#3490F3"),
+                                ),
+                                SizedBox(
+                                  width: 15,
+                                ),
+                                TextView(
+                                  text: categ,
+                                  size: 22,
+                                  weight: FontWeight.w600,
+                                )
+                              ],
+                            ),
                           ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ).toList()
+                          bottomWidget: SizedBox(
+                            width: double.infinity,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: sortArrayByProperty(
+                                      _trackObjs
+                                          .where((ting) =>
+                                              ting['category'] == categ)
+                                          .toList(),
+                                      'order')
+                                  .map((track) {
+                                return PaddingView(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      TextView(
+                                        text: track['title'],
+                                        size: 18,
+                                        wrap: true,
+                                      ),
+                                      Row(
+                                        children: [
+                                          if (_mediaPlayer.audioPath !=
+                                              track['audioUrl'])
+                                            ButtonView(
+                                              child: Icon(
+                                                Icons.play_arrow_rounded,
+                                                size: 32,
+                                                color: hexToColor("#1985C6"),
+                                              ),
+                                              onPress: () async {
+                                                await _mediaPlayer
+                                                    .stopPlaying();
+                                                setState(() {
+                                                  _isPlaying = true;
+                                                  _mediaPlayer.audioPath =
+                                                      track['audioUrl'];
+                                                });
+                                                await _mediaPlayer
+                                                    .playRecording();
+                                              },
+                                            ),
+                                          if (_isPlaying &&
+                                              _mediaPlayer.audioPath ==
+                                                  track['audioUrl'])
+                                            ButtonView(
+                                              child: Icon(
+                                                Icons.stop_rounded,
+                                                size: 32,
+                                                color: hexToColor("#FF1F54"),
+                                              ),
+                                              onPress: () {
+                                                setState(() {
+                                                  _isPlaying = false;
+                                                  _mediaPlayer.audioPath = "";
+                                                });
+                                                _mediaPlayer.stopPlaying();
+                                              },
+                                            )
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ).toList(),
+                SizedBox(
+                  height: 20,
+                )
+              ],
+            ),
+          ),
+        )
       ],
     );
   }

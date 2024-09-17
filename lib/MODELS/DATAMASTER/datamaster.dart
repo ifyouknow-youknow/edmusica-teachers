@@ -25,15 +25,18 @@ class DataMaster with _DataMasterToggles, _DataMasterStrings, _DataMasterLists {
     print(user);
     if (user != null) {
       var userDoc = await firebase_GetDocument('${appName}_Teachers', user.uid);
-
-      final token = await messaging_SetUp();
-      final success = await firebase_UpdateDocument(
-          '${appName}_Teachers', userDoc['id'], {'token': token});
-      if (success) {
-        userDoc = {...userDoc, 'token': token};
+      if (userDoc.isNotEmpty) {
+        final token = await messaging_SetUp();
+        final success = await firebase_UpdateDocument(
+            '${appName}_Teachers', userDoc['id'], {'token': token});
+        if (success) {
+          userDoc = {...userDoc, 'token': token};
+        }
+        setUser(userDoc);
+        return true;
+      } else {
+        return false;
       }
-      setUser(userDoc);
-      return true;
     } else {
       return false;
     }
