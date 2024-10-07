@@ -44,7 +44,7 @@ android {
         applicationId = "com.iicdev.EDMTeachersApp"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = 10
+        versionCode = 12
         versionName = flutterVersionName
         minSdkVersion 23
         ndkVersion "26.1.10909125"
