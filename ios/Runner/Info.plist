@@ -43,9 +43,9 @@
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>We use the local network for Firebase messaging.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>We need your location to provide personalized experiences even when the app is in the background.</string>
+	<string>We require your location to accurately monitor your clock-in and clock-out points.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We need your location to provide personalized experiences.</string>
+	<string>We require your location to accurately monitor your clock-in and clock-out points.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>We need microphone access for recording audio.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
@@ -66,13 +66,6 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
 	<key>aps-environment</key>
 	<string>development</string>
